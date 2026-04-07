@@ -26,5 +26,5 @@ class UserOut(UserSchema):
     id:int
     is_active:bool
     created_At:datetime
-    class Config:
-        from_attributes=True    
+    class config:
+        from_attribute:True    

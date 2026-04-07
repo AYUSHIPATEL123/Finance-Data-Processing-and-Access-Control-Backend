@@ -15,7 +15,7 @@ class User(Base):
 
     id:Mapped[int]=mapped_column(autoincrement=True,primary_key=True,index=True)
     username:Mapped[str]=mapped_column(String(50),index=True)
-    password:Mapped[str]=mapped_column(String(255))
+    password:Mapped[str]=mapped_column(String(500))
     email:Mapped[str]=mapped_column(String(50),unique=True,index=True)
     # role:Mapped[Roles]=mapped_column(Enum(Roles),index=True)
     role:Mapped[str]=mapped_column(String(20),index=True)

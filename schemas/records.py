@@ -16,4 +16,10 @@ class RecordSchema(BaseModel):
     notes:Optional[str] = None
 
     user_id:int
+
+class RecordOut(RecordSchema):
+    id:int
+
+    class config:
+        from_attribute:True         
    

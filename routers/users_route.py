@@ -6,30 +6,35 @@ from models.users import User
 from database import get_db
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Annotated
-
+import hashlib
 router = APIRouter()
+
 
 pwd_content = CryptContext(schemes=["bcrypt"],deprecated="auto")
 
+
 def hash_password(password:str) -> str:
-    return pwd_content.hash(password)
+    hashed = hashlib.sha256(password.encode()).hexdigest()
+    return pwd_content.hash(hashed)
  
 
 @router.get('/users/',response_model=list[UserOut])
 async def users(db:Annotated[AsyncSession,Depends(get_db)]):
     query = select(User)
-    users = await db.execute(query).scalars().all()
-    await db.refresh(users)
+    users = await db.execute(query)
+    users = users.scalars().all()
+    
     return users
+
 
 @router.post('/add-user/',response_model=UserOut)
 async def add_user(data:UserSchema,db:Annotated[AsyncSession,Depends(get_db)]):
-    print("start")
     user = User(username=data.username,password=data.password,email=data.email,role=data.role)
     db.add(user)
     await db.commit()
     await db.refresh(user)
     return user
+
 
 @router.put('/update-user/{id}',response_model=UserOut)
 async def update_user(id:int,new_data:UserSchema,db:AsyncSession=Depends(get_db)):
@@ -46,10 +51,13 @@ async def update_user(id:int,new_data:UserSchema,db:AsyncSession=Depends(get_db)
     await db.refresh(user)
     return user
 
+
 @router.delete('/del-user/{id}')
 async def del_user(id:int,db:AsyncSession=Depends(get_db)):
     user = await db.get(User,id)
+    if not user:
+        return {"message": "user not found"}
     await db.delete(user)
-    if user:
-        return {"message":"user is not deleted"}
+    await db.commit()
+   
     return {"message":"user deleted successfully"}

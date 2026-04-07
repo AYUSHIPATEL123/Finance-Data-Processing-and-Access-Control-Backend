@@ -14,7 +14,7 @@ class Record(Base):
     __tablename__ = "records"
 
     id:Mapped[int]=mapped_column(primary_key=True,autoincrement=True,index=True)
-    amount:Mapped[int]=mapped_column(primary_key=True)
+    amount:Mapped[float]
     # type:Mapped[RecordType]=mapped_column(Enum[RecordType],index=True)
     type:Mapped[str]=mapped_column(String(50),index=True)
     category:Mapped[str]=mapped_column(String(50))
