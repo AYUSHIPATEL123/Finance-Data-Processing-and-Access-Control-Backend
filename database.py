@@ -1,7 +1,11 @@
 from sqlalchemy.ext.asyncio import AsyncSession , async_sessionmaker,create_async_engine
 from sqlalchemy.ext.declarative import declarative_base
+import os 
+from dotenv import load_dotenv
 
-SQLALCHEMY_DB_URL = "mysql+aiomysql://root:root@localhost:3306/data_pro_db"
+load_dotenv()
+
+SQLALCHEMY_DB_URL = os.getenv("SQLALCHEMY_DB_URL")
 
 async_engine = create_async_engine(url=SQLALCHEMY_DB_URL,echo=True)
 
