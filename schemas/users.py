@@ -28,3 +28,8 @@ class UserOut(UserSchema):
     created_At:datetime
     class config:
         from_attribute:True    
+
+class LoginSchema(BaseModel):
+    
+    email:str
+    password:str        

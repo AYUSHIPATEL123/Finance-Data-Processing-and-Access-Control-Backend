@@ -7,6 +7,8 @@ from database import get_db
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Annotated
 import hashlib
+
+
 router = APIRouter()
 
 
@@ -16,7 +18,10 @@ pwd_content = CryptContext(schemes=["bcrypt"],deprecated="auto")
 def hash_password(password:str) -> str:
     hashed = hashlib.sha256(password.encode()).hexdigest()
     return pwd_content.hash(hashed)
- 
+
+def verify_password(plan_password:str,stored_password:str) -> bool:
+    hashed = hashlib.sha256(plan_password.encode()).hexdigest()
+    return pwd_content.verify(hashed,stored_password)
 
 @router.get('/users/',response_model=list[UserOut])
 async def users(db:Annotated[AsyncSession,Depends(get_db)]):
@@ -27,13 +32,7 @@ async def users(db:Annotated[AsyncSession,Depends(get_db)]):
     return users
 
 
-@router.post('/add-user/',response_model=UserOut)
-async def add_user(data:UserSchema,db:Annotated[AsyncSession,Depends(get_db)]):
-    user = User(username=data.username,password=data.password,email=data.email,role=data.role)
-    db.add(user)
-    await db.commit()
-    await db.refresh(user)
-    return user
+
 
 
 @router.put('/update-user/{id}',response_model=UserOut)
