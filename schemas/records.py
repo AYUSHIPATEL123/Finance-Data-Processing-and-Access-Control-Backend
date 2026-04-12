@@ -20,6 +20,6 @@ class RecordSchema(BaseModel):
 class RecordOut(RecordSchema):
     id:int
 
-    class config:
+    class Config:
         from_attribute:True         
    

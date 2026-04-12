@@ -21,12 +21,15 @@ class UserSchema(BaseModel):
     records:list[RecordSchema]=[]
 
 
-class UserOut(UserSchema):
+class UserOut(BaseModel):
 
     id:int
+    username:str
+    email:str
+    role:UserRoles
     is_active:bool
     created_At:datetime
-    class config:
+    class Config:
         from_attribute:True    
 
 class LoginSchema(BaseModel):
