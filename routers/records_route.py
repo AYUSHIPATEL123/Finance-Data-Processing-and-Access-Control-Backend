@@ -7,6 +7,8 @@ from database import Base,get_db
 from models.records import Record
 from schemas.users import UserSchema,UserOut
 from services.service import require_role
+
+
 router = APIRouter()
 
 
@@ -61,6 +63,7 @@ async def update_record(id:int,new_data:RecordSchema,db:Annotated[AsyncSession,D
 
 @router.delete('/del-record/{id}',response_model=RecordOut) 
 async def del_record(id:int,db:Annotated[AsyncSession,Depends(get_db)],access:Annotated[UserOut,Depends(require_role("admin"))]):
+    
     record = await db.get(Record,id) 
     
     if not record:

@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from routers import records_route, users_route,auth_route
+from routers import dashboard_route, records_route, users_route,auth_route
 from database import get_db,async_engine,Base
 from models import records,users
 from contextlib import asynccontextmanager
@@ -22,6 +22,8 @@ app = FastAPI(lifespan=lifespan)
 app.include_router(users_route.router)
 app.include_router(records_route.router)
 app.include_router(auth_route.router)
+app.include_router(dashboard_route.router)
+
 
 
 @app.on_event('startup')
