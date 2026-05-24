@@ -28,9 +28,9 @@ async def records(db:Annotated[AsyncSession,Depends(get_db)],access:Annotated[Us
 
 
 @router.post('/add-record/',response_model=RecordOut)
-async def add_record(data:RecordSchema,db:Annotated[AsyncSession,Depends(get_db)],access:Annotated[UserOut,Depends(require_role("admin"))]):
+async def add_record(data:RecordSchema,db:Annotated[AsyncSession,Depends(get_db)],access:Annotated[UserOut,Depends(require_role("admin","user"))]):
     
-    record = Record(amount=data.amount,type=data.type,category=data.category,notes=data.notes,user_id=data.user_id)
+    record = Record(amount=data.amount,type=data.type,category=data.category,notes=data.notes,user_id=access.id)
 
     db.add(record)
     
@@ -42,7 +42,7 @@ async def add_record(data:RecordSchema,db:Annotated[AsyncSession,Depends(get_db)
 
 
 @router.put('/update-record/{id}',response_model=RecordOut)
-async def update_record(id:int,new_data:RecordSchema,db:Annotated[AsyncSession,Depends(get_db)],access:Annotated[UserOut,Depends(require_role("admin","analyst","user"))]):
+async def update_record(id:int,new_data:RecordSchema,db:Annotated[AsyncSession,Depends(get_db)],access:Annotated[UserOut,Depends(require_role("admin","analyst"))]):
     
     record = await db.get(Record,id)
     

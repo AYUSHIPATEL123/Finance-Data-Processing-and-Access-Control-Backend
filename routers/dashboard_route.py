@@ -75,3 +75,19 @@ async def total_balance(id: int,db:Annotated[AsyncSession,Depends(get_db)],acces
 
         return {"Net-balance":net_bal}    
 
+
+@router.get('/cat-total/{id}')
+async def cat_toal(id:int,category:str,db:Annotated[AsyncSession,Depends(get_db)],access:Annotated[UserOut,Depends(require_role("admin","analyst","user"))]):
+
+        if access.role == "user" and id != access.id:
+                raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,detail="you do not have access to this Data")
+
+        query1 = select(Record).where(Record.user_id==id,category==category)
+
+        total = await db.execute(query1)
+
+        total = total.scalars().all()
+
+        total = sum(i.amount for i in total)
+
+        return {f"total as {category} category":total}

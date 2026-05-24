@@ -15,7 +15,7 @@ class RecordSchema(BaseModel):
     category:str
     notes:Optional[str] = None
 
-    user_id:int
+    
 
 class RecordOut(RecordSchema):
     id:int
