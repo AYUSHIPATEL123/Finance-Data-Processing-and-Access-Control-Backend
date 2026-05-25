@@ -1,4 +1,4 @@
-from fastapi import APIRouter,Depends,HTTPException
+from fastapi import APIRouter,Depends,HTTPException,BackgroundTasks
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from schemas.users import UserOut,UserSchema,LoginSchema
@@ -7,6 +7,7 @@ from typing import Annotated
 from database import get_db
 from dotenv import load_dotenv
 from services.service import hash_password,verify_password,get_jwt_token
+from services.email_service import send_reg_mail
 
 
 load_dotenv()
@@ -16,7 +17,7 @@ router = APIRouter()
 
 
 @router.post('/register/',response_model=UserOut)
-async def add_user(data:UserSchema,db:Annotated[AsyncSession,Depends(get_db)]):
+async def add_user(data:UserSchema,db:Annotated[AsyncSession,Depends(get_db)],background_task:BackgroundTasks):
     
     user = User(username=data.username,password=hash_password(data.password),email=data.email,role=data.role)
     
@@ -25,6 +26,8 @@ async def add_user(data:UserSchema,db:Annotated[AsyncSession,Depends(get_db)]):
     await db.commit()
     
     await db.refresh(user)
+
+    background_task.add_task(send_reg_mail,user.email)
     
     return user
 

@@ -20,14 +20,14 @@ depends_on: Union[str, Sequence[str], None] = None
 
 def upgrade() -> None:
     """Upgrade schema."""
-    op.drop_constraint('password','users',type_='unique')
+    
     op.alter_column('users','password',existing_type=sa.String(8),type_=sa.String(500))
-    op.drop_constraint('amount','records',type_='primary')
+    
 
 
 def downgrade() -> None:
     """Downgrade schema."""
-    op.create_unique_constraint('password','users',['password'])
+    
     op.alter_column('users','password',type_=sa.String(8),existing_type=sa.String(500))
-    op.create_primary_key('amount','records',['amount',]) 
+    
 

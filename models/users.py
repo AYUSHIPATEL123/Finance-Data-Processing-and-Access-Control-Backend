@@ -22,5 +22,5 @@ class User(Base):
     is_active:Mapped[bool]=mapped_column(default=True)
     created_At:Mapped[DateTime]=mapped_column(DateTime(timezone=True),server_default=func.now())
 
-    records:Mapped[list["Record"]]=relationship(back_populates="user",lazy="selectin")
+    records:Mapped[list["Record"]]=relationship(back_populates="user",lazy="selectin",cascade="all, delete-orphan")
     

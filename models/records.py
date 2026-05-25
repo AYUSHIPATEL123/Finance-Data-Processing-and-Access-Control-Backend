@@ -20,6 +20,6 @@ class Record(Base):
     category:Mapped[str]=mapped_column(String(50))
     notes:Mapped[str]=mapped_column(String(500))
 
-    user_id:Mapped[int]=mapped_column(ForeignKey("users.id"),index=True)
+    user_id:Mapped[int]=mapped_column(ForeignKey("users.id",ondelete="CASCADE"),nullable=False,index=True)
     user:Mapped["User"]=Relationship(back_populates="records")
 
