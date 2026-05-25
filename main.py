@@ -19,13 +19,15 @@ async def lifespan(app:FastAPI):
 app = FastAPI(lifespan=lifespan)
 
 
-app.include_router(users_route.router)
-app.include_router(records_route.router)
-app.include_router(auth_route.router)
-app.include_router(dashboard_route.router)
+app.include_router(users_route.router,prefix="/user")
+app.include_router(records_route.router,prefix="/record")
+app.include_router(auth_route.router,prefix="/auth")
+app.include_router(dashboard_route.router,prefix="/dashboard")
 
 
-
+for route in app.routes:
+    print(route.path)
+    
 @app.on_event('startup')
 async def create_tbl():
     async with async_engine.begin() as conn:
